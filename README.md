@@ -42,6 +42,7 @@ Default server port: **8081**
 - Spring Web (REST)
 - Spring Data JPA + PostgreSQL
 - Spring AMQP + RabbitMQ
+- SpringDoc OpenAPI (Swagger UI)
 - Lombok
 - Maven (wrapper included)
 - Docker Compose (Postgres + RabbitMQ)
@@ -225,6 +226,9 @@ macOS / Linux:
 
 App URL: http://localhost:8081
 
+Swagger UI: http://localhost:8081/swagger-ui.html  
+OpenAPI JSON: http://localhost:8081/v3/api-docs
+
 ### 3. Try the API
 
 ```bash
@@ -268,6 +272,8 @@ File: `src/main/resources/application.properties`
 ---
 
 ## API reference
+
+Interactive docs (Swagger UI): http://localhost:8081/swagger-ui.html
 
 Base URL: `http://localhost:8081`
 
