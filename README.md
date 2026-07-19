@@ -194,7 +194,15 @@ POST /order
 
 ## Quick start
 
-### 1. Start dependencies
+### 1. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your credentials (file is gitignored).
+
+### 2. Start dependencies
 
 ```bash
 docker compose up -d
@@ -202,14 +210,28 @@ docker compose up -d
 
 This starts:
 
-| Service | Port | Credentials |
+| Service | Port (from `.env`) | Credentials (from `.env`) |
 |---------|------|-------------|
-| PostgreSQL | `5432` | `delivery_admin` / `admin` — DB `food_delivery` |
-| RabbitMQ | `5672` (AMQP), `15672` (UI) | `guest` / `guest` |
+| PostgreSQL | `POSTGRES_PORT` | `POSTGRES_USER` / `POSTGRES_PASSWORD` — DB `POSTGRES_DB` |
+| pgAdmin | `PGADMIN_PORT` | `PGADMIN_DEFAULT_EMAIL` / `PGADMIN_DEFAULT_PASSWORD` |
+| RabbitMQ | `RABBITMQ_PORT` (AMQP), `RABBITMQ_MANAGEMENT_PORT` (UI) | `RABBITMQ_USER` / `RABBITMQ_PASSWORD` |
 
+pgAdmin UI: http://localhost:5050  
 RabbitMQ management UI: http://localhost:15672
 
-### 2. Run the app
+In pgAdmin → **Register → Server**, connection settings:
+
+| Field | Value |
+|-------|-------|
+| Host name/address | `postgres` |
+| Port | `5432` |
+| Maintenance database | value of `POSTGRES_DB` |
+| Username | value of `POSTGRES_USER` |
+| Password | value of `POSTGRES_PASSWORD` |
+
+Use hostname `postgres` (the Docker Compose service name) so pgAdmin reaches the DB container on the same network.
+
+### 3. Run the app
 
 Windows (PowerShell):
 
@@ -229,7 +251,7 @@ App URL: http://localhost:8081
 Swagger UI: http://localhost:8081/swagger-ui.html  
 OpenAPI JSON: http://localhost:8081/v3/api-docs
 
-### 3. Try the API
+### 4. Try the API
 
 ```bash
 # Add menu items
@@ -256,18 +278,28 @@ On bash, use `\` instead of `^` for line continuation.
 
 ## Configuration
 
-File: `src/main/resources/application.properties`
+All secrets and ports live in **`.env`** (gitignored). Copy from the template:
 
-| Property | Default | Meaning |
-|----------|---------|---------|
-| `server.port` | `8081` | HTTP port |
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/food_delivery` | Database |
-| `spring.datasource.username` | `delivery_admin` | DB user |
-| `spring.datasource.password` | `admin` | DB password |
-| `spring.jpa.hibernate.ddl-auto` | `update` | Auto schema update |
-| `spring.rabbitmq.host` | `localhost` | Broker host |
-| `spring.rabbitmq.port` | `5672` | Broker port |
-| `spring.rabbitmq.queue` | `delivery.queue` | Consumer queue |
+```bash
+cp .env.example .env
+```
+
+| Variable | Meaning |
+|----------|---------|
+| `POSTGRES_DB` | PostgreSQL database name |
+| `POSTGRES_USER` / `POSTGRES_PASSWORD` | Database credentials |
+| `POSTGRES_PORT` | Host port for Postgres |
+| `SPRING_DATASOURCE_URL` | JDBC URL used by the app |
+| `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` | App DB login |
+| `RABBITMQ_HOST` / `RABBITMQ_PORT` | Broker address |
+| `RABBITMQ_USER` / `RABBITMQ_PASSWORD` | Broker credentials |
+| `RABBITMQ_QUEUE` | Delivery queue name |
+| `RABBITMQ_MANAGEMENT_PORT` | RabbitMQ management UI port |
+| `PGADMIN_DEFAULT_EMAIL` / `PGADMIN_DEFAULT_PASSWORD` | pgAdmin login |
+| `PGADMIN_PORT` | pgAdmin UI port |
+| `SERVER_PORT` | Spring Boot HTTP port |
+
+`application.properties` and `docker-compose.yml` both read these values. Never commit `.env`.
 
 ---
 
