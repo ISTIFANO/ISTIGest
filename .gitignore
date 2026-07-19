@@ -1,6 +1,3 @@
-# Nested UI repo (own git remote)
-ISTIGest-ui/
-
 # Secrets / local env (never commit)
 .env
 .env.local
